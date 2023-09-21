@@ -1,9 +1,9 @@
-import CustomerCreatedEvent from "../customer/custumer_created_event";
-import CustomerChangedAddressHandler from "../customer/handler/customer_changed_address_handler";
-import EnviaConsoleLog2Handler from "../customer/handler/envia_console_log2_handler";
-import EnviaConsoleLog1Handler from "../customer/handler/envia_console_log_handler";
-import SendEmailWhenProductIsCreatedHandler from "../product/handler/send_email_when_product_is_created";
-import ProductCreatedEvent from "../product/product_created_event";
+import CustomerCreatedEvent from "../../event/customer/custumer_created_event";
+import CustomerChangedAddressHandler from "../../customer/event/handler/customer_changed_address_handler";
+import EnviaConsoleLog2Handler from "../../customer/event/handler/envia_console_log2_handler";
+import EnviaConsoleLog1Handler from "../../customer/event/handler/envia_console_log_handler";
+import SendEmailWhenProductIsCreatedHandler from "../../product/event/handler/send_email_when_product_is_created";
+import ProductCreatedEvent from "../../product/event/product_created_event";
 import EventDispatcher from "./event_dispatcher";
 
 describe("Domain events test", () => {
