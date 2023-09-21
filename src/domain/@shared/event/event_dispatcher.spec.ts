@@ -1,4 +1,4 @@
-import CustomerCreatedEvent from "../../event/customer/custumer_created_event";
+import CustomerCreatedEvent from "../../customer/event/custumer_created_event";
 import CustomerChangedAddressHandler from "../../customer/event/handler/customer_changed_address_handler";
 import EnviaConsoleLog2Handler from "../../customer/event/handler/envia_console_log2_handler";
 import EnviaConsoleLog1Handler from "../../customer/event/handler/envia_console_log_handler";
