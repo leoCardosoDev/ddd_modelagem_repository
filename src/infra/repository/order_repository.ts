@@ -28,7 +28,6 @@ export default class OrderRepository implements OrderRepositoryInterface {
   async update(entity: Order): Promise<void> {
     entity.items.map((item) => {
       let orderItem = OrderItemModel.findOne({ where: { id: item.id } });
-
       if (orderItem) {
         OrderItemModel.update(
           {
@@ -43,7 +42,6 @@ export default class OrderRepository implements OrderRepositoryInterface {
         );
       }
     });
-
     await OrderModel.update(
       {
         id: entity.id,
@@ -79,13 +77,30 @@ export default class OrderRepository implements OrderRepositoryInterface {
         )
       )
     );
-
     const orderModel = await OrderModel.findOne({ where: { id } });
-
     return new Order(orderModel.id, orderModel.customer_id, items);
   }
 
-  findAll(): Promise<Order[]> {
-    throw new Error("Method not implemented.");
+  async findAll(): Promise<Order[]> {
+    const orderModels = await OrderModel.findAll();
+    const orderItemModels = await OrderItemModel.findAll();
+    const orders: Order[] = [];
+    orderModels.map((order) => {
+      const items: OrderItem[] = [];
+      orderItemModels.map((item) => {
+        if (item.order_id === order.id)
+          items.push(
+            new OrderItem(
+              item.id,
+              item.product_id,
+              item.name,
+              item.price,
+              item.quantity
+            )
+          );
+      });
+      orders.push(new Order(order.id, order.customer_id, items));
+    });
+    return orders;
   }
 }
