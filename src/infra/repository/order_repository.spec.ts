@@ -17,11 +17,16 @@ describe("Order repository test", () => {
 
   beforeEach(async () => {
     sequelize = new Sequelize({
-      dialect: 'sqlite',
-      storage: ':memory',
-      sync: { force: true},
+      dialect: "sqlite",
+      storage: ":memory",
+      sync: { force: true },
     });
-    sequelize.addModels([CustomerModel, OrderModel, OrderItemModel, ProductModel]);
+    sequelize.addModels([
+      CustomerModel,
+      OrderModel,
+      OrderItemModel,
+      ProductModel,
+    ]);
     await sequelize.sync();
   });
 
@@ -37,22 +42,28 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10)
+    const product = new Product("123", "Product 1", 10);
     await productRepository.create(product);
 
-    const orderItem = new OrderItem("123", product.id, product.name, product.price, 2);
+    const orderItem = new OrderItem(
+      "123",
+      product.id,
+      product.name,
+      product.price,
+      2
+    );
     const order = new Order("123", "123", [orderItem]);
 
     const orderRepository = new OrderRepository();
     await orderRepository.create(order);
 
     const orderModel = await OrderModel.findOne({
-      where: {id: order.id},
-      include: ["items"]
+      where: { id: order.id },
+      include: ["items"],
     });
 
     expect(orderModel.toJSON()).toStrictEqual({
-      id: "123", 
+      id: "123",
       customer_id: "123",
       total: order.total(),
       items: [
@@ -62,10 +73,56 @@ describe("Order repository test", () => {
           price: orderItem.price,
           quantity: orderItem.quantity,
           order_id: "123",
-          product_id: "123"
-        }
-      ]
+          product_id: "123",
+        },
+      ],
+    });
+  });
+
+  it("Should update an order", async () => {
+    const customerRepository = new CustomerRepository();
+    const customer = new Customer("123", "Customer 1");
+    const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
+    customer.changeAddress(address);
+    await customerRepository.create(customer);
+
+    const productRepository = new ProductRepository();
+    const product = new Product("123", "Product 1", 10);
+    await productRepository.create(product);
+
+    const orderItem = new OrderItem(
+      "123",
+      product.id,
+      product.name,
+      product.price,
+      3
+    );
+    const order = new Order("123", "123", [orderItem]);
+    const orderRepository = new OrderRepository();
+    await orderRepository.create(order);
+
+    orderItem.changeQuantity(2);
+    await orderRepository.update(order);
+
+    const orderModel = await OrderModel.findOne({
+      where: { id: order.id },
+      include: ["items"],
     });
 
+    expect(orderModel.toJSON()).toStrictEqual({
+      id: "123",
+      customer_id: "123",
+      total: order.total(),
+      items: [
+        {
+          id: orderItem.id,
+          name: orderItem.name,
+          price: orderItem.price,
+          quantity: orderItem.quantity,
+          order_id: "123",
+          product_id: "123",
+        },
+      ],
+    });
   });
 });

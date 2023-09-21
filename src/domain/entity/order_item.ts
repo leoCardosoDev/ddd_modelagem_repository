@@ -5,7 +5,13 @@ export default class OrderItem {
   private _price: number;
   private _quantity: number;
 
-  constructor(id: string, productId: string, name: string, price: number, quantity: number){
+  constructor(
+    id: string,
+    productId: string,
+    name: string,
+    price: number,
+    quantity: number
+  ) {
     this._id = id;
     this._productId = productId;
     this._name = name;
@@ -37,4 +43,7 @@ export default class OrderItem {
     return this._price * this._quantity;
   }
 
+  changeQuantity(quantity: number) {
+    this._quantity = quantity;
+  }
 }
